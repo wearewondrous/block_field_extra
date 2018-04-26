@@ -40,13 +40,14 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
         'field_definition' => $items->getFieldDefinition(),
         'langcode' => $langcode,
       ];
-      // Inject the attachment as the field item settings.
-      // This can be useful if you need this data on the field type plugin.
-      foreach ($items as $item) {
-        $settings = $item->settings;
-        $settings['block_field_attachments'] = $block_field_attachments;
-        $item->set('settings', $settings);
-      }
+
+//      // Inject the attachment as the field item settings.
+//      // This can be useful if you need this data on the field type plugin.
+//      foreach ($items as $item) {
+//        $settings = $item->settings;
+//        $settings['block_field_attachments'] = $block_field_attachments;
+//        $item->set('settings', $settings);
+//      }
     }
 
     // Let the parent to build the elements.
@@ -57,8 +58,13 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
 
     if (isset($block_field_attachments)) {
       foreach ($elements as &$element) {
+        // Let the block theme know about the attachment.
+        // FYI, you can access this value on the block template.
         $element['block_field_attachments'] = $block_field_attachments;
+
         if (isset($element['content']['#view'])) {
+          // Let the view know about the attachment.
+          // FYI, you can access this value on the view template.
           $view = $element['content']['#view'];
           $view->block_field_attachments = $block_field_attachments;
         }
@@ -66,13 +72,6 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
     }
 
     return $elements;
-  }
-
-
-  public function getFieldBuild($entity, $field_name) {
-    $build = $entity->{$field_name}->view($this->viewMode);
-
-    return $build;
   }
 
   /**
@@ -109,7 +108,24 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
    */
   public function settingsSummary() {
     $summary = parent::settingsSummary();
+    // Todo implement the summary.
     return $summary;
+  }
+
+  /**
+   * Gets the entity field build.
+   *
+   * @param $entity
+   *   The entity object.
+   * @param $field_name
+   *   The field name.
+   *
+   * @return mixed
+   */
+  public function getFieldBuild($entity, $field_name) {
+    $build = $entity->{$field_name}->view($this->viewMode);
+
+    return $build;
   }
 
   /**
@@ -167,7 +183,6 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
     $entity_field_definitions = $this->getFieldDefinitions();
     $current_field = $this->fieldDefinition->getName();
 
-    // Build the arguments array;
     foreach ($entity_field_definitions as $entity_field_definition) {
       if ($entity_field_definition instanceof \Drupal\field\Entity\FieldConfig && $entity_field_definition->getName() != $current_field ) {
         $fields[$entity_field_definition->getName()] = $entity_field_definition->label();
@@ -194,6 +209,5 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
 
     return $entity_field_definitions;
   }
-
 
 }
