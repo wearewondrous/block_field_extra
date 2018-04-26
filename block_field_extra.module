@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Contains block_field_extra.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function block_field_extra_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the block_field_extra module.
+    case 'help.page.block_field_extra':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Extends the block field functionality') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+
+/**
+ * Implements hook_preprocess().
+ */
+function block_field_extra_preprocess(&$variables, $hook, $info) {
+  if ($hook = 'views_view') {
+    if (isset($variables['view']->block_field_attachments)) {
+      $variables['block_field_attachments'] = $variables['view']->block_field_attachments;
+    }
+  }
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function block_field_extra_views_data_alter(array &$data) {
+  $data['views']['block_field_attachments'] = [
+    'title' => t('Block field attachments'),
+    'help' => t('Block field attachments'),
+    'area' => [
+      'id' => 'block_field_attachments',
+    ],
+  ];
+}

@@ -1,0 +1,16 @@
+{
+  "name": "WondrousLLC/block_field_extra",
+  "type": "drupal-module",
+  "description": "Extends the block field functionality",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/block_field_extra",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/block_field_extra",
+    "source": "http://cgit.drupalcode.org/block_field_extra"
+  },
+  "require": {
+    "drupal/block_field": "^1.0-alpha5"
+  }
+}

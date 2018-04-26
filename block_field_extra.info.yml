@@ -1,0 +1,7 @@
+name: 'Block field extra'
+type: module
+description: 'Extends the block field functionality'
+core: 8.x
+package: 'block_field'
+dependencies:
+  - block_field
