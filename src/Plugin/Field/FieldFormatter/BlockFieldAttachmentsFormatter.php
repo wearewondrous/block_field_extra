@@ -30,7 +30,7 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
     $entity = $items->getEntity();
     foreach ($settings['field'] as $field_name) {
       if ($entity->hasField($field_name) && ($field_value = $this->getValue($entity, $field_name))) {
-        $build = $this->getFieldBuild($entity, $field_name);
+        $build = $this->getFieldBuild($entity, $field_name, $langcode);
         $block_field_attachments[$field_name] = $build ?: $field_value;
       }
     }
@@ -41,13 +41,13 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
         'langcode' => $langcode,
       ];
 
-//      // Inject the attachment as the field item settings.
-//      // This can be useful if you need this data on the field type plugin.
-//      foreach ($items as $item) {
-//        $settings = $item->settings;
-//        $settings['block_field_attachments'] = $block_field_attachments;
-//        $item->set('settings', $settings);
-//      }
+      //      // Inject the attachment as the field item settings.
+      //      // This can be useful if you need this data on the field type plugin.
+      //      foreach ($items as $item) {
+      //        $settings = $item->settings;
+      //        $settings['block_field_attachments'] = $block_field_attachments;
+      //        $item->set('settings', $settings);
+      //      }
     }
 
     // Let the parent to build the elements.
@@ -122,10 +122,36 @@ class BlockFieldAttachmentsFormatter extends BlockFieldFormatter {
    *
    * @return mixed
    */
-  public function getFieldBuild($entity, $field_name) {
+  public function getFieldBuild($entity, $field_name, $langcode) {
+    // Force the field item list to use the entity translation.
+    $this->setFieldTranslation($entity, $field_name, $langcode);
+    // Get the field build.
     $build = $entity->{$field_name}->view($this->viewMode);
 
     return $build;
+  }
+
+  /**
+   * Updates the field item list parent entity value with the entity translation.
+   *
+   * @param $entity
+   *   The entity object.
+   * @param $field_name
+   *   The field name.
+   * @param $langcode
+   *   The language code.
+   *
+   * TODO find why this is happening and remove this function if possible.
+   */
+  public function setFieldTranslation($entity, $field_name, $langcode) {
+    if (!$entity->isTranslatable() || !$entity->hasTranslation($langcode) || !$entity->hasField($field_name)) {
+      return;
+    }
+    $entity_translation = $entity->getTranslation($langcode);
+    $field = $entity_translation->{$field_name};
+    // The field parents needs to be set else the default langcode will be
+    // loaded.
+    $field->getParent()->setValue($entity_translation);
   }
 
   /**
