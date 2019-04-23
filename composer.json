@@ -1,5 +1,5 @@
 {
-  "name": "WondrousLLC/block_field_extra",
+  "name": "wearewondrous/block_field_extra",
   "type": "drupal-module",
   "description": "Extends the block field functionality",
   "keywords": ["Drupal"],
